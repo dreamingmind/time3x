@@ -127,11 +127,11 @@ class TimesController extends AppController
             'OpenRecords',
             ['user_id' => $this->userId, 'days' => $days]);
         $summarizer = new Summaries();
-        debug($summarizer->summarizeProjects($result));
-        debug($summarizer->summarizeUsers($result));
+//        debug($summarizer->summarizeProjects($result));
+        $report = $summarizer->summarizeUsers($result);
 
-        $this->set('times', $result);
-//        $this->setUiSelects('jobs');
+        $this->set(compact('result', 'report'));
+        $this->setUiSelects('jobs');
     }
 
     /**
@@ -320,9 +320,9 @@ class TimesController extends AppController
      * @param string $type filtering desired for project/task lists
      */
     private function setUiSelects($type = 'all') {
-        $users = $this->Time->User->fetchList();
-        $projects = $this->Time->Project->selectList($type);
-        $tasks = $this->Task->groupedTaskList($type);
+        $users = $this->Times->Users->find('list')->toArray();
+        $projects = $this->Times->Projects->selectList($type)->toArray();
+        $tasks = $this->Times->Tasks->groupedTaskList($type)->toArray();
         $this->set(compact('users', 'projects', 'tasks'));
 
     }
