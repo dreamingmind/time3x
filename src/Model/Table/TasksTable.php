@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use App\Model\Lib\StateConditionTrait;
 
 /**
  * Tasks Model
@@ -25,6 +26,9 @@ use Cake\Validation\Validator;
  */
 class TasksTable extends Table
 {
+
+    use StateConditionTrait;
+
     /**
      * Initialize method
      *
@@ -92,5 +96,20 @@ class TasksTable extends Table
         $rules->add($rules->existsIn(['project_id'], 'Projects'));
 
         return $rules;
+    }
+
+    public function groupedTaskList($type = 'all') {
+        $conditions = $this->stateCondition($type);
+        return $this->find('list', [
+            'keyField' => 'id',
+            'valueField' => 'name',
+            'groupField' => 'project_id'])
+            ->where($conditions);
+    }
+
+    public function projectTasks($projectId) {
+        $task = $this->find('list')
+            ->where(['project_id' => $projectId]);
+        return $task;
     }
 }
