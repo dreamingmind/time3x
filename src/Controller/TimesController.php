@@ -127,16 +127,10 @@ class TimesController extends AppController
             'OpenRecords',
             ['user_id' => $this->userId, 'days' => $days]);
         $summarizer = new Summaries();
-        $summarizer->summarizeProjects($result);
+        debug($summarizer->summarizeProjects($result));
+        debug($summarizer->summarizeUsers($result));
 
         $this->set('times', $result);
-//        $this->render();
-        //        $this->request->data = $this->Times->reindex($this->request->data);
-
-//        $this->set('report',
-//            isset($this->Time->reportData['Time'])
-//                ? $this->Report->summarizeUsers($this->Time->reportData['Time'])
-//                : array());
 //        $this->setUiSelects('jobs');
     }
 

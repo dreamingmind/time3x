@@ -55,4 +55,19 @@ class Time extends Entity
     {
         return $this->time_out->timestamp - $this->time_in->timestamp;
     }
+
+    public function userId()
+    {
+        return $this->user_id;
+    }
+
+    public function taskId()
+    {
+        return $this->task_id;
+    }
+
+    public function projectId()
+    {
+        return $this->project_id;
+    }
 }

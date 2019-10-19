@@ -132,7 +132,7 @@ class Summaries {
 
 		foreach ($timeEntries as $time) {
 			$this->time = $time;
-			$duration = $this->duration($time);
+			$duration = $time->duration();
             $this->userUserCumm($duration);
             $this->userProjectCumm($duration);
             $this->userProjectTaskCumm($duration);
@@ -162,13 +162,14 @@ class Summaries {
 
 		foreach ($timeEntries as $time) {
 			$this->time = $time;
-			$duration = $this->duration($time);
+			$duration = $time->duration();
 			$this->projectUserCumm($duration);
 			$this->projectProjectCumm($duration);
 			$this->projectProjectUserCumm($duration);
 			$this->projectTaskCumm($duration);
 			$this->projectTaskUserCumm($duration);
 		}
+		return $this->projectCumm;
 	}
 
 	/**
@@ -206,12 +207,9 @@ class Summaries {
         $projects = TableRegistry::getTableLocator()->get('Projects');
         $users = TableRegistry::getTableLocator()->get('Users');
         $tasks = TableRegistry::getTableLocator()->get('Tasks');
-        $this->projects = $projects->find('list');
-		$this->users = $users->find('list');
-		$this->tasks = $tasks->find('list');
-		debug($projects);
-		debug($users);
-		debug($tasks);die;
+        $this->projects = $projects->find('list')->toArray();
+		$this->users = $users->find('list')->toArray();
+		$this->tasks = $tasks->find('list')->toArray();
 	}
 
 	/**
@@ -345,10 +343,9 @@ class Summaries {
 	 * @return string
 	 */
 	private function userName() {
-		if (is_null($this->time['user_id'])) {
-			return ('un-named');
-		}
-		return  $this->users[$this->time['user_id']];
+	    return is_null($this->time->userId())
+            ? 'un-named'
+            : $this->users[$this->time->userId()];
 	}
 
 	/**
@@ -357,10 +354,9 @@ class Summaries {
 	 * @return string
 	 */
 	private function taskName() {
-		if (is_null($this->time['task_id'])) {
-			return ('un-named');
-		}
-		return  $this->tasks[$this->time['task_id']];
+        return is_null($this->time->taskId())
+            ? 'un-named'
+            : $this->tasks[$this->time->taskId()];
 	}
 
 	/**
@@ -369,10 +365,9 @@ class Summaries {
 	 * @return string
 	 */
 	private function projectName() {
-		if (is_null($this->time['project_id'])) {
-			return 'un-named';
-		}
-		return  $this->projects[$this->time['project_id']];
+        return is_null($this->time->projectId())
+            ? 'un-named'
+            : $this->projects[$this->time->projectId()];
 	}
 
 
