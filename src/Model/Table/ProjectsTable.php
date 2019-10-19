@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use App\Model\Lib\StateConditionTrait;
 
 /**
  * Projects Model
@@ -26,6 +27,8 @@ use Cake\Validation\Validator;
  */
 class ProjectsTable extends Table
 {
+    use StateConditionTrait;
+
     /**
      * Initialize method
      *
@@ -96,4 +99,39 @@ class ProjectsTable extends Table
 
         return $rules;
     }
+    /**
+     * Get a filtered list of jobs
+     *
+     * jobs, active, maintenance, inactive, all|NULL
+     * jobs = active || maintenance
+     *
+     * @param string $type
+     * @return array The list as id => project_name or project_name => id
+     */
+    public function selectList($type = 'all') {
+        $conditions = $this->stateCondition($type);
+        return $this->find('list', array(
+            'conditions' => $conditions,
+            'field' => array('id', 'name')
+        ));
+    }
+
+    /**
+     * Get a filtered list of jobs
+     *
+     * jobs, active, maintenance, inactive, all|NULL
+     * jobs = active || maintenance
+     *
+     * @param string $type
+     * @return array The list as project_name => id
+     */
+    public function inList($type = 'all') {
+        $conditions = $this->stateCondition($type);
+        return $this->find('list', array(
+            'conditions' => $conditions,
+            'field' => array('name', 'id')
+        ));
+
+    }
+
 }
