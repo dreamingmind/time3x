@@ -1,6 +1,7 @@
 <?php
 namespace App\Lib;
 
+use App\Model\Entity\Time;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -20,7 +21,7 @@ class Summaries {
 	 * This is a transient value. Be sure you set it when you need it.
 	 * Field names are first level indexes.
 	 *
-	 * @var array
+	 * @var Time
 	 */
 	private $time;
 
@@ -90,26 +91,6 @@ class Summaries {
 	 */
 	private $tasks;
 
-	public function initialize(Controller $controller) {
-
-	}
-
-	public function startup(Controller $controller) {
-
-	}
-
-	public function beforeRender(Controller $controller) {
-
-	}
-
-	public function shutDown(Controller $controller) {
-
-	}
-
-	public function beforeRedirect(Controller $controller, $url, $status = null, $exit = true) {
-
-	}
-
 	/**
 	 * Summarize the times for this set of time records
 	 *
@@ -132,7 +113,7 @@ class Summaries {
 
 		foreach ($timeEntries as $time) {
 			$this->time = $time;
-			$duration = $time->duration();
+			$duration = $this->duration();
             $this->userUserCumm($duration);
             $this->userProjectCumm($duration);
             $this->userProjectTaskCumm($duration);
@@ -162,7 +143,7 @@ class Summaries {
 
 		foreach ($timeEntries as $time) {
 			$this->time = $time;
-			$duration = $time->duration();
+			$duration = $this->duration();
 			$this->projectUserCumm($duration);
 			$this->projectProjectCumm($duration);
 			$this->projectProjectUserCumm($duration);
@@ -332,9 +313,9 @@ class Summaries {
 	 * @return float
 	 */
 	private function duration() {
-		$dur = explode(':', $this->time['duration']);
+//		$dur = explode(':', $this->time['duration']);
 //		return (($dur[0] * HOUR) + ($dur[1] * MINUTE) + $dur[2]) / HOUR;
-		return number_format((($dur[0] * HOUR) + ($dur[1] * MINUTE) + $dur[2]) / HOUR , 2);
+		return number_format($this->time->duration() / HOUR , 2);
 	}
 
 	/**
