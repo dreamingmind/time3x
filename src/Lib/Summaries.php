@@ -13,8 +13,6 @@ use Cake\ORM\TableRegistry;
  */
 class Summaries {
 
-	public $components = array();
-
 	/**
 	 * The current time record of interest
 	 *
@@ -151,32 +149,6 @@ class Summaries {
 			$this->projectTaskUserCumm($duration);
 		}
 		return $this->projectCumm;
-	}
-
-	/**
-	 * Return the current User Time summary
-	 *
-	 * @return array
-	 */
-	public function userTime() {
-		if (is_array($this->userCumm)) {
-			return $this->userCumm;
-		} else {
-			return array();
-		}
-	}
-
-	/**
-	 * Return the current Project Time summary
-	 *
-	 * @return array
-	 */
-	public function projectTime() {
-		if (is_array($this->projectCumm)) {
-			return $this->projectCumm;
-		} else {
-			return array();
-		}
 	}
 
 	/**
