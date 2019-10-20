@@ -4,6 +4,7 @@
    - Change old WorkListBehavior into a trait   
    This tool makes 'status' field condition statements based on human 
    named inputs
+   - Bring in TKHelper
    
 #Plans
    - work on migrating the `times/task/{days}` action and view to 3x cake.   
