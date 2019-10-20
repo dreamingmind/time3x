@@ -57,7 +57,7 @@ echo $this->Html->tableCells(array(
 //			'bind' => 'change.taskChoice',
 //			'project_id' => $this->request->data[$index]['Time']['project_id']
 //		))
-		$this->Tk->taskSelect("$index.Time.task_id", $record->project_id, array('label' => FALSE, 'div' => FALSE)),
+		$this->Tk->taskSelect("$index.Time.task_id", $record, ['label' => FALSE, 'div' => FALSE, 'tasks' => $tasks]),
 
         $this->Time->format($record->time_in, '%m.%d - %I:%M %p'),
 

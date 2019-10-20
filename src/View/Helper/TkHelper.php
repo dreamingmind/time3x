@@ -110,21 +110,23 @@ class TkHelper extends Helper {
 	 */
 
 	public function taskSelect($field, $data, $options = FALSE){
-		$projectId = $data;
-		$Task = ClassRegistry::init('Task');
-		$task = $Task->projectTasks($projectId);
+		$projectId = $data->project_id;
+		$task = $options['tasks'][intval($projectId)] ?? [];
+		unset($options['tasks']);
+//		$Task = ClassRegistry::init('Task');
+//		$task = $Task->projectTasks($projectId);
 		$attributes = array(
 			'options' => $task,
 			'empty' => 'Choose a task',
 			'bind' => 'change.taskChoice',
 			'project_id' => $projectId,
 			'fieldname' => 'task_id',
-			'index' => (isset($data['Time']['id'])) ? $data['Time']['id'] : ''
+			'index' => $data->id ?? ''
 		);
 		if ($options) {
 			$attributes = array_merge($options, $attributes);
 		}
-		return $this->Form->input($field, $attributes);
+		return $this->Form->control($field, $attributes);
 	}
 /**
  * Build a nested list (UL/OL) out of an associative array.

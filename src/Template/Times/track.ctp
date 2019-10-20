@@ -15,7 +15,8 @@ if (!empty($result)) {
     foreach ($result as $index => $record) {
         echo $this->element('track_row', array(
             'projects' => $projects,
-            'record' => $record
+            'record' => $record,
+            'tasks' => $tasks
         ));
     }
 }
