@@ -1,0 +1,81 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 28, 2014, 10:38:05 PM
+    Author     : jasont
+*/
+table.striped tbody th{
+	text-align: left;
+}
+
+textarea {
+    height: 30px;
+}
+
+table.striped tr.open.alt {
+    background-color: rgb(122,232,150);
+}
+table.striped tr.open {
+    background-color: rgb(184,243,199);
+}
+
+table.striped tr.paused.alt {
+    background-color: rgb(255,160,138);
+}
+table.striped tr.paused {
+    background-color: rgb(255,198,185);
+}
+ul.menu {
+    width: 120px;
+    z-index: 10000;
+    margin-bottom: 9px;
+}
+.menu li.has-menu a{
+    padding: 5px;
+}
+.has-menu.last > a {
+    color: black;
+    font-weight: bold;
+}
+footer {
+    background: none repeat scroll 0 0 #cccccb;
+    font-size: 8pt;
+    height: 15px;
+    padding: 2px;
+    text-align: right;
+}
+button.minus, button.plus {
+    height: 20px;
+    padding: 0;
+    width: 20px;
+}
+div#scale_width, div#scale_height, div#scale_width p, div#scale_height p {
+	display: inline;
+}
+li > a > i.icon-plus {
+	width: 9px;
+	font-size: 50%;
+}
+table[id*="cakeSqlLog"] {
+    display: block;
+}
+.toggle{
+    cursor: pointer;
+}
+ul.timereport{
+    font-size: 94%;
+    margin: 0 0 10px 25px;
+    width: 350px;
+}
+ul.timereport > li{
+    padding: 0;
+}
+ul.timereport > li > span{
+    float: right;
+}
+li.timerow{
+    border-bottom: thin solid #ccc;
+}

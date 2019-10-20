@@ -26,6 +26,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </title>
     <?= $this->Html->meta('icon') ?>
 
+    <?= $this->Html->css('time'); ?>
+    <? // $this->Html->script(['jquery-1.10.2', 'jquery-ui', 'app', 'timekeep']); ?>
+
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('style.css') ?>
 
