@@ -26,27 +26,28 @@ class TkHelper extends Helper {
         $this->index = $index;
         $buttons = array(
 			$this->duplicateButton(),
-            $this->actionButton('icon-info-sign', 'click.timeInfo')
+            $this->actionButton('icon-info-sign', 'click.timeInfo', 'Info')
         );
         if($status & CLOSED){
-            $buttons[] = $this->actionButton('icon-refresh', 'click.timeReopen');
-            $buttons[] = $this->actionButton('icon-trash', 'click.timeDelete');
+            $buttons[] = $this->actionButton('icon-refresh', 'click.timeReopen', 'Reopen');
+            $buttons[] = $this->actionButton('icon-trash', 'click.timeDelete', 'Delete');
         } else {
-            $buttons[] = $this->actionButton('icon-stop', 'click.timeStop');
+            $buttons[] = $this->actionButton('icon-stop', 'click.timeStop', 'Stop');
             $buttons[] = $this->pauseButton($status);
-            $buttons[] = $this->actionButton('icon-trash', 'click.timeDelete');
+            $buttons[] = $this->actionButton('icon-trash', 'click.timeDelete', 'Delete');
         }
         return $this->Html->nestedList($buttons, array('class' => 'button-bar'));
     }
 
-    private function actionButton($type, $bind = NULL) {
+    private function actionButton($type, $bind = NULL, $title = NULL) {
         $attributes = array(
             'escape' => FALSE,
+            'title' => $title,
             'index' => $this->index);
         if($bind != NULL){
             $attributes['bind'] = $bind;
         }
-        return $this->Html->link($this->Html->tag('i', '', array('class' => $type)), '', $attributes);
+        return $this->Html->link($this->Html->tag('i', '', ['class' => $type]), '', $attributes);
     }
 
 	private function duplicateButton() {
@@ -59,9 +60,9 @@ class TkHelper extends Helper {
 
     private function pauseButton($status) {
         if($status & OPEN){
-            $button = $this->actionButton('icon-pause', 'click.timePause');
+            $button = $this->actionButton('icon-pause', 'click.timePause', 'Pause');
         } else {
-            $button = $this->actionButton('icon-play', 'click.timeRestart');
+            $button = $this->actionButton('icon-play', 'click.timeRestart', 'Resume');
         }
         return $button;
     }
@@ -110,16 +111,16 @@ class TkHelper extends Helper {
 	 */
 
 	public function taskSelect($field, $data, $options = FALSE){
-		$projectId = $data->project_id;
-		$task = $options['tasks'][intval($projectId)] ?? [];
-		unset($options['tasks']);
+//		$projectId = $data->project_id;
+//		$task = $options['tasks'][intval($projectId)] ?? [];
+//		unset($options['tasks']);
 //		$Task = ClassRegistry::init('Task');
 //		$task = $Task->projectTasks($projectId);
 		$attributes = array(
-			'options' => $task,
+			'options' => $options['tasks'],
 			'empty' => 'Choose a task',
 			'bind' => 'change.taskChoice',
-			'project_id' => $projectId,
+			'project_id' => $data->project_id,
 			'fieldname' => 'task_id',
 			'index' => $data->id ?? ''
 		);
@@ -193,6 +194,11 @@ class TkHelper extends Helper {
      */
     protected function spanTimeItems($item) {
         return $this->Html->tag('span', $item, array('class' => 'timeInt'));
+    }
+
+    public function id($label, $record)
+    {
+        return "{$record->id}Time$label";
     }
 
 }

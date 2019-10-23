@@ -76,4 +76,9 @@ class AppController extends Controller
         $this->userId = $this->Session->read('User.id');
     }
 
+    protected function writeUser($id)
+    {
+        $this->Session->write('User.id', $id);
+    }
+
 }

@@ -1,20 +1,23 @@
 <?php
-//$task = $this->Tk->task($this->request->data[$index], $tasks);
-$index = $record->id;
-$duration = $this->Html->tag('span', substr($record->duration,0,5), array(
-    'id' => $index.'duration',
-    'class' => "toggle {$index}duration"));
-$duration .= $this->Form->input("$index.Time.duration", array(
-    'class' => $index.'duration hide',
+/*
+ * Establish variables for the output
+ */
+$recordId = $record->id;
+$duration = $this->Html->tag("span", $record->duration('h'), array(
+    'id' => $recordId.'duration',
+    'class' => "toggle {$recordId}duration"));
+$duration .= $this->Form->control("$index.Time.duration", array(
+    'class' => $recordId.'duration hide',
     'label' => FALSE,
     'bind' => 'change.saveField blur.hideDurationInput',
     'fieldName' => 'duration',
-    'index' => $index,
+    'index' => $recordId,
+    'id' =>$this->Tk->id('Duration', $record),
     'div' => array(
-        'id' => "durdiv$index"
+        'id' => "durdiv$recordId"
     )));
-$rowAttr = array('id' => 'row_'.$index);
-switch ($this->request->data("$index.Time.status")) {
+$rowAttr = array('id' => 'row_'.$recordId);
+switch ($record->status) {
     case OPEN:
         $rowAttr['class'] = 'open';
         break;
@@ -30,47 +33,70 @@ switch ($this->request->data("$index.Time.status")) {
     default:
         break;
 }
-//dmDebug::ddd($this->request->data('{n}.Time.status'), 'status');
 
-echo $this->Html->tableCells(array(
+/*
+ * Output a row of table cells for one time record
+ */
+$html = $this->Html->tableCells(array(
     array(
-        $this->Form->input("$index.Time.id", array('type' => 'hidden')) .
-        $this->Form->input("$index.Time.time_out", array('type' => 'hidden')) .
-        $this->Form->input("$index.Time.user_id", array('type' => 'hidden')) .
-        $this->Form->input("$index.Time.project_id", array(
+        $this->Form->control("$index.id", [
+            'type' => 'hidden',
+            'id' => $this->Tk->id('Id', $record)
+        ]) .
+        $this->Form->control("$index.time_out", [
+            'type' => 'hidden',
+            'id' => $this->Tk->id('TimeOut', $record)
+        ]) .
+        $this->Form->control("$index.user_id", [
+            'type' => 'hidden',
+            'id' => $this->Tk->id('UserId', $record)
+        ]) .
+        $this->Form->control("$index.project_id", [
             'options' => $projects,
             'label' => FALSE,
             'div' => FALSE,
             'bind' => 'change.saveField',
             'empty' => 'Choose a project',
             'fieldName' => 'project_id',
-            'index' => $index
-        )),
-//        . '&nbsp;'
-//        . $this->Tk->setProjectDefaultButton($this->request->data[$index]['Time']['project_id']),
+            'index' => $recordId,
+            'id' => $this->Tk->id('ProjectId', $record)
+        ]),
 
-//		$this->Form->input("$index.Time.task_id", array(
-//			'options' => $task,
-//			'label' => FALSE,
-//			'div' => FALSE,
-//			'empty' => 'Choose a task',
-//			'bind' => 'change.taskChoice',
-//			'project_id' => $this->request->data[$index]['Time']['project_id']
-//		))
-		$this->Tk->taskSelect("$index.Time.task_id", $record, ['label' => FALSE, 'div' => FALSE, 'tasks' => $tasks]),
+		$this->Tk->taskSelect(
+		    "$index.task_id",
+            $record,
+            [
+                'label' => FALSE,
+                'div' => FALSE,
+                'tasks' => $tasks ?? [],
+                'id' => $this->Tk->id('TaskId', $record)
+            ]),
 
-        $this->Time->format($record->time_in, '%m.%d - %I:%M %p'),
+        $record->time_in->i18nFormat('MM/dd HH:mm pp'), // outputs '2014-04-20 22:10', '%m.%d - %I:%M %p'), //09.30 9:14
 
         $duration,
 
-        $this->Form->input("$index.Time.activity", array(
+        $this->Form->control("$index.activity", array(
             'label' => FALSE,
             'div' => FALSE,
             'bind' => 'change.saveField',
             'fieldName' => 'activity',
-            'index' => $index
+            'index' => $recordId,
+            'id' => $this->Tk->id('Activity', $record)
         )),
 
-        $this->Tk->timeFormActionButtons($index, $record->status))
+        $this->Tk->timeFormActionButtons($recordId, $record->status))
 
 ), $rowAttr, $rowAttr);
+
+if ($this->request->is('ajax')) {
+    $jsonObject = [
+        'projects' => $projects,
+        'taskGroups' => $taskGroups,
+        'id' => $recordId,
+        'html' => $html
+    ];
+    echo json_encode($jsonObject);
+} else {
+    echo $html;
+}

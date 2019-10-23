@@ -125,7 +125,8 @@ class TimesController extends AppController
     public function track($days = 1) {
         $result = $this->Times->find(
             'OpenRecords',
-            ['user_id' => $this->userId, 'days' => $days]);
+            ['user_id' => $this->userId, 'days' => $days])
+            ->select(['id', 'time_in', 'time_out', 'activity', 'project_id', 'task_id', 'status', ]);
         $summarizer = new Summaries();
 //        debug($summarizer->summarizeProjects($result));
         $report = $summarizer->summarizeUsers($result);
@@ -140,21 +141,20 @@ class TimesController extends AppController
      */
     public function newTimeRow() {
         $this->layout = 'ajax';
-        $this->request->data('Time.user_id', $this->Auth->user('id'))
-            ->data('Time.time_in', date('Y-m-d H:i:s'))
-            ->data('Time.time_out', date('Y-m-d H:i:s'))
-            ->data('Time.project_id', NULL)
-            ->data('Time.duration', '00:00')
-            ->data('Time.status', OPEN);
-        $this->Time->create($this->request->data);
-        $result = $this->Time->save($this->request->data);
-        $this->request->data = array($result['Time']['id'] => $result);
+        $time = new Time([
+            'user_id' => $this->readUser(),
+            'time_in' => new FrozenTime(time()),
+            'time_out' => new FrozenTime(time()),
+            'status' => OPEN
+        ]);
+        $result = $this->Times->save($time);
 
-        $this->set('userId', $result['Time']['user_id']);
-        $this->set('index', $result['Time']['id']);
+        $this->set('userId', $result->user_id);
+        $this->set('index', 0);
+        $this->set('record', $result);
         $this->setUiSelects('jobs');
 
-        $this->render('/Elements/track_row');
+        $this->render('/Element/track_row');
     }
 
     /**
@@ -163,15 +163,15 @@ class TimesController extends AppController
      */
     public function duplicateTimeRow($id) {
         $this->layout = 'ajax';
-        $this->request->data = $this->Time->find('first', array('conditions' => array('Time.id' => $id)));
+        $this->request->data = $this->Times->find('first', array('conditions' => array('Time.id' => $id)));
         $this->request->data('Time.user_id', $this->Auth->user('id'))
             ->data('Time.id', NULL)
             ->data('Time.time_in', date('Y-m-d H:i:s'))
             ->data('Time.time_out', date('Y-m-d H:i:s'))
             ->data('Time.duration', '00:00')
             ->data('Time.status', OPEN);
-        $this->Time->create($this->request->data);
-        $result = $this->Time->save($this->request->data);
+        $this->Times->create($this->request->data);
+        $result = $this->Times->save($this->request->data);
         $this->request->data = array($result['Time']['id'] => $result);
 
         $this->set('userId', $result['Time']['user_id']);
@@ -187,7 +187,7 @@ class TimesController extends AppController
      */
     public function deleteRow($id) {
         $this->layout = 'ajax';
-        $result = $this->Time->delete($id);
+        $result = $this->Times->delete($id);
         $this->set('result', array('result' => $result));
         $this->render('/Elements/json_return');
     }
@@ -199,16 +199,33 @@ class TimesController extends AppController
     public function saveField() {
         $result = array();
         $this->layout = 'ajax';
-        $this->Time->id = $this->request->data['id'];
-        if($this->request->data['fieldName'] == 'duration'){
+        $this->Times->id = $this->request->data['id'];
+        if($this->request->getData('fieldName') == 'duration'){
             $this->saveDuration();
+        } elseif ($this->request->getData('fieldname') == 'project_id') {
+            $this->validateTask;
         } else {
             $this->saveStandard();
         }
-        $result['result'] = $this->Time->save($this->request->data);
-        $result['duration'] = substr($this->Time->field('Time.duration', array('Time.id' => $this->request->data['Time']['id'])),0,5);
-        $this->set('result', $result);
-        $this->render('/Elements/json_return');
+        $entity = new Time($this->request->getData());
+        $result = $this->Times->save($entity);
+        $timeEntity = $this->Times->get($entity->id);
+
+        $this->set('userId', $timeEntity->user_id);
+        $this->set('index', 0);
+        $this->set('record', $timeEntity);
+        $this->setUiSelects('jobs');
+
+        $this->render('/Element/track_row');
+    }
+
+    public function psuedoFunction()
+    {
+        $foundSet = $this->readCacheOrDoQuery($IDs);
+        $this->sort($foundSet);
+        foreach ($foundSet as $entity) {
+            $this->render($entity->transformedData());
+        }
     }
 
     /**
@@ -225,12 +242,10 @@ class TimesController extends AppController
         $timeIn = date('Y-m-d H:i:s', time() - $durSeconds);
         $timeOut = date('Y-m-d H:i:s', time());
         $this->request->data= array(
-            'Time' => array(
-                'id' => $this->request->data['id'],
-                'time_in' => $timeIn,
-                'time_out' => $timeOut
-            )
-        );
+            'id' => $this->request->data['id'],
+                'time_in' => new FrozenTime($timeIn),
+                'time_out' => new FrozenTime($timeOut)
+            );
     }
 
     /**
@@ -257,7 +272,7 @@ class TimesController extends AppController
     public function timeStop($id, $state = CLOSED) {
         $this->layout = 'ajax';
         $time = date('Y-m-d H:i:s');
-        if($this->Time->getRecordStatus($id) != PAUSED){
+        if($this->Times->getRecordStatus($id) != PAUSED){
             $this->request->data('Time.time_out', $time);
         }
         $this->request->data('Time.id', $id)
@@ -284,7 +299,7 @@ class TimesController extends AppController
      */
     public function timeRestart($id) {
         $this->layout = 'ajax';
-        $duration = $this->Time->field('duration', array('Time.id' => $id));
+        $duration = $this->Times->field('duration', array('Time.id' => $id));
         $this->request->data('id', $id)
             ->data('value', $duration);
         $this->saveDuration();
@@ -301,11 +316,11 @@ class TimesController extends AppController
      * @return string The element to render
      */
     private function saveTimeChange($id) {
-        if(!$this->Time->save($this->request->data)){
+        if(!$this->Times->save($this->request->data)){
             $this->Session->setFlash('The record update failed, please try again.');
             $element = '/Elements/ajax_flash';
         } else {
-            $this->request->data[$id] = $this->Time->find('first', array('conditions' => array('Time.id' => $id)));
+            $this->request->data[$id] = $this->Times->find('first', array('conditions' => array('Time.id' => $id)));
             $this->set('index', $id);
             $this->setUiSelects('jobs');
             $element = '/Elements/track_row';
@@ -322,8 +337,13 @@ class TimesController extends AppController
     private function setUiSelects($type = 'all') {
         $users = $this->Times->Users->find('list')->toArray();
         $projects = $this->Times->Projects->selectList($type)->toArray();
-        $tasks = $this->Times->Tasks->groupedTaskList($type)->toArray();
-        $this->set(compact('users', 'projects', 'tasks'));
+        $taskGroups = $this->Times->Tasks->groupedTaskList($type)->toArray();
+        $statuses = [1 => 'Open', 'Review', 'Closed', 'Paused'];
+            //"OPEN", 1);
+            //define("REVIEW", 2);
+            //define("CLOSED", 4);
+            //define("PAUSED", 8
+        $this->set(compact('users', 'projects', 'taskGroups', 'statuses'));
 
     }
 
@@ -335,14 +355,14 @@ class TimesController extends AppController
     public function search() {
         $times = [];
         if ($this->request->is('post')) {
-            $times = $this->Time->search($this->postConditions());
+            $times = $this->Times->search($this->postConditions());
         }
-        $projects = $this->Time->Project->find('list');
-        $tasks = $this->Time->Task->find('list');
-        $this->Time->reindex($times);
+        $projects = $this->Times->Project->find('list');
+        $tasks = $this->Times->Task->find('list');
+        $this->Times->reindex($times);
         $this->set('report',
-            isset($this->Time->reportData['Time'])
-                ? $this->Report->summarizeUsers($this->Time->reportData['Time'])
+            isset($this->Times->reportData['Time'])
+                ? $this->Report->summarizeUsers($this->Times->reportData['Time'])
                 : array());
         $this->setUiSelects('jobs');
         $this->set(compact('tasks', 'projects', 'times'));

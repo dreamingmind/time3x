@@ -1,14 +1,6 @@
 <?php
-//debug($users);
-//debug($projects);
-//debug($tasks);
-//foreach ($times as $time) {
-//    $s = $time->time_in;
-//    $e = $time->time_out;
-//    echo '<p>' . "{$s->day}-{$s->month}-{$s->year}" . ' to ' . "{$e->day}-{$e->month}-{$e->year}" . ' = ' . $time->duration();
-//}
 echo "\n" . $this->element('scale_textarea_ui');
-echo $this->Form->create('Time');
+echo $this->Form->create($result, ['id' => 'TimeTrackForm']);
 echo $this->Html->tag('Table', NULL, array('class' => 'striped tight sortable'));
 echo $this->Html->tableHeaders(array('Project', 'Task', 'Time In', 'Duration', 'Activity', 'Tools'), array('class' => 'thead'));
 if (!empty($result)) {
@@ -16,7 +8,8 @@ if (!empty($result)) {
         echo $this->element('track_row', array(
             'projects' => $projects,
             'record' => $record,
-            'tasks' => $tasks
+            'tasks' => $taskGroups[$record->project_id] ?? [],
+            'index' => $index
         ));
     }
 }

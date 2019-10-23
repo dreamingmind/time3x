@@ -35,8 +35,8 @@ class Time extends Entity
      * @var array
      */
     protected $_accessible = [
-        'created' => true,
-        'modified' => true,
+        'created' => false,
+        'modified' => false,
         'user_id' => true,
         'project_id' => true,
         'time_in' => true,
@@ -51,9 +51,16 @@ class Time extends Entity
         'task' => true
     ];
 
-    public function duration()
+    public function duration($units = 's')
     {
-        return $this->time_out->timestamp - $this->time_in->timestamp;
+        $duration = $this->time_out->timestamp - $this->time_in->timestamp;
+        if ($units === 'h') {
+            $decimal = number_format($duration/HOUR, 2);
+            list($hour, $minute) = explode('.', $decimal);
+            $minute = intval(($minute / 100) * 60);
+            $duration = "$hour:$minute";
+        }
+        return $duration;
     }
 
     public function userId()
