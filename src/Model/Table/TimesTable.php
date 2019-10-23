@@ -121,13 +121,5 @@ class TimesTable extends Table
                 'time_in >' => date('Y:m:d H:i:s', time() - $days * DAY)
             ]
         ]);
-
-//        'conditions' => array(
-//        'user_id' => $userId,
-//        'OR' => array(
-//            'status' => OPEN,
-//
-//        )
-
     }
 }

@@ -126,7 +126,7 @@ class TimesController extends AppController
         $result = $this->Times->find(
             'OpenRecords',
             ['user_id' => $this->readUserId(), 'days' => $days])
-            ->select(['id', 'time_in', 'time_out', 'activity', 'project_id', 'task_id', 'status', ]);
+            ->select(['id', 'user_id', 'time_in', 'time_out', 'activity', 'project_id', 'task_id', 'status', ]);
         $summarizer = new Summaries();
 //        debug($summarizer->summarizeProjects($result));
         $report = $summarizer->summarizeUsers($result);

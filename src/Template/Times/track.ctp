@@ -16,5 +16,12 @@ if (!empty($result)) {
 echo '</table>';
 echo '</form>';
 
-echo $this->Form->button($this->Html->tag('i', '', array('class' => 'icon-plus-sign')) . ' New', array('class' => 'orange', 'bind' => 'click.newTimeRow'));
+echo $this->Form->button(
+    $this->Html->tag(
+        'i',
+        '',
+        ['class' => 'icon-plus-sign'])
+    . ' New', ['class' => 'orange', 'bind' => 'click.newTimeRow']
+);
+debug($report);
 echo $this->Tk->nestedList($report, array('class' => 'timereport'));

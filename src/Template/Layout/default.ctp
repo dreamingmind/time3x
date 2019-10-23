@@ -72,7 +72,9 @@ debug($this->request->getSession()->read());
 echo '</div>';
 ?>
 </body>
-<footer id="footer"><img src="img/crane_black_transparent_400_400.png" alt="the origami crane" width="20px">  Copyright 2014 Origami Structures</footer>
+<footer id="footer">
+    <img src="/time3x/img/crane_black_transparent_400_400.png" alt="the origami crane" width="20px">
+    Copyright 2014 Origami Structures</footer>
 
 </body>
 </html>
