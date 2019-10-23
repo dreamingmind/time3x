@@ -142,7 +142,7 @@ class TimesController extends AppController
     public function newTimeRow() {
         $this->layout = 'ajax';
         $time = new Time([
-            'user_id' => $this->readUser(),
+            'user_id' => $this->readUserId(),
             'time_in' => new FrozenTime(time()),
             'time_out' => new FrozenTime(time()),
             'status' => OPEN
