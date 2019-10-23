@@ -58,8 +58,8 @@ ul.menu {
 footer {
     background: none repeat scroll 0 0 #cccccb;
     font-size: 8pt;
-    height: 15px;
-    padding: 2px;
+    height: 1.95rem;
+    padding: 0.25rem;
     text-align: right;
 }
 button.minus, button.plus {

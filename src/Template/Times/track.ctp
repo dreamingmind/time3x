@@ -23,5 +23,5 @@ echo $this->Form->button(
         ['class' => 'icon-plus-sign'])
     . ' New', ['class' => 'orange', 'bind' => 'click.newTimeRow']
 );
+echo '<p> </p>';
 debug($report);
-echo $this->Tk->nestedList($report, array('class' => 'timereport'));

@@ -148,6 +148,7 @@ class TkHelper extends Helper {
 //		debug($options);
 
 		$items = $this->_nestedListItem($list, $options, $itemOptions, $tag);
+		debug($items);
 		return sprintf($this->Html->_tags[$tag], $this->Html->templater()->formatAttributes($options, null, ' ', ''), $items);
 	}
 
@@ -175,12 +176,35 @@ class TkHelper extends Helper {
 				$itemOptions['class'] = $itemOptions['odd'];
 			}
 			if (strpos($item, $key) === 0) {
-				$out .= sprintf($this->Html->_tags['li'], $this->Html->templater()->formatAttributes($itemOptions, array('even', 'odd'), ' ', ''), $item);
+			    $out .= $this->Html->formatTemplate(
+                    'li',
+                    [
+                        'attrs' => $itemOptions,
+                        'content' => $item
+                    ]
+                );
+//				$out .= sprintf($this->Html->getTemplates('li'),
+//                    $this->Html->templater()->formatAttributes($itemOptions, ['even', 'odd'], ' ', ''),
+//                    $item
+//                );
+//				debug($out);
 			} else {
                 $heldIO = $itemOptions;
                 $itemOptions = array_merge($itemOptions, array('class' => 'timerow'));
-				$out .= sprintf($this->Html->_tags['li'], $this->Html->templater()->formatAttributes($itemOptions, array('even', 'odd'), ' ', ''), "$key : {$this->spanTimeItems($item)}");
+                $out .= $this->Html->formatTemplate(
+                    'li',
+                    [
+                        'attrs' => $itemOptions,
+                        'content' => "$key : {$this->spanTimeItems($item)}"
+                    ]
+                );
+//				$out .= sprintf(
+//				    $this->Html->getTemplates('li'),
+//                    $this->Html->templater()->formatAttributes($itemOptions, ['even', 'odd'], ' ', ''),
+//                    "$key : {$this->spanTimeItems($item)}"
+//                );
                 $itemOptions = $heldIO;
+//                debug($out);
 			}
 			$index++;
 		}
