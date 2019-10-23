@@ -31,7 +31,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?=  $this->Html->css('kickstart-grid') ?>
 
     <?= $this->Html->css('time'); ?>
-    <?= $this->Html->script(['jquery-1.10.2', 'jquery-ui', 'app', 'timekeep']); ?>
+    <?= $this->Html->script(['jquery-1.10.2', 'jquery-ui', 'kickstart', 'app', 'timekeep']); ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
