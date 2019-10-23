@@ -163,19 +163,22 @@ class TimesController extends AppController
      */
     public function duplicateTimeRow($id) {
         $this->layout = 'ajax';
-        $this->request->data = $this->Times->find('first', array('conditions' => array('Time.id' => $id)));
-        $this->request->data('Time.user_id', $this->Auth->user('id'))
-            ->data('Time.id', NULL)
-            ->data('Time.time_in', date('Y-m-d H:i:s'))
-            ->data('Time.time_out', date('Y-m-d H:i:s'))
-            ->data('Time.duration', '00:00')
-            ->data('Time.status', OPEN);
-        $this->Times->create($this->request->data);
-        $result = $this->Times->save($this->request->data);
-        $this->request->data = array($result['Time']['id'] => $result);
+        $time = $this->Times->get($id);
+        $newTime = new Time([
+            'project_id' => $time->projectId(),
+            'task_id' => $time->taskId(),
+            'activity' => $time->activity,
+            'status' => OPEN,
+            'user_id' => $time->user_id,
+            'time_in' => new FrozenTime(time()),
+            'time_out' => new FrozenTime(time()),
+        ]);
 
-        $this->set('userId', $result['Time']['user_id']);
-        $this->set('index', $result['Time']['id']);
+        $result = $this->Times->save($newTime);
+
+        $this->set('userId', $result->user_id);
+        $this->set('index', 0);
+        $this->set('record', $result);
         $this->setUiSelects('jobs');
 
         $this->render('/Element/track_row');

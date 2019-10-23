@@ -315,9 +315,9 @@ function hideDurationInput(e) {
     $.ajax({
         type: "GET",
         url: OSTime.webroot + OSTime.controller + "duplicateTimeRow/" + $(e.currentTarget).attr('index'),
-        dataType: "html",
+        dataType: "JSON",
         success: function (data) {
-            $('#TimeTrackForm tbody').append(data);
+            $('#TimeTrackForm tbody').append(data.html);
             updateTableClassing();
             updateTableSortability();
             bindHandlers('table.sortable tr.last');
