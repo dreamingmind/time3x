@@ -117,6 +117,7 @@ class TkHelper extends Helper {
 //		$Task = ClassRegistry::init('Task');
 //		$task = $Task->projectTasks($projectId);
 		$attributes = array(
+		    'value' => $data->task_id,
 			'options' => $options['tasks'],
 			'empty' => 'Choose a task',
 			'bind' => 'change.taskChoice',

@@ -2,21 +2,23 @@
 /*
  * Establish variables for the output
  */
+$tasks = $taskGroups[$record->project_id] ?? [];
 $recordId = $record->id;
 $duration = $this->Html->tag("span", $record->duration('h'), array(
     'id' => $recordId.'duration',
     'class' => "toggle {$recordId}duration"));
-$duration .= $this->Form->control("$index.Time.duration", array(
+$duration .= $this->Form->control("$index.Time.duration", [
+    'value' => $record->duration('h'),
     'class' => $recordId.'duration hide',
     'label' => FALSE,
     'bind' => 'change.saveField blur.hideDurationInput',
     'fieldName' => 'duration',
     'index' => $recordId,
     'id' =>$this->Tk->id('Duration', $record),
-    'div' => array(
+    'div' => [
         'id' => "durdiv$recordId"
-    )));
-$rowAttr = array('id' => 'row_'.$recordId);
+    ]]);
+$rowAttr = ['id' => 'row_'.$recordId];
 switch ($record->status) {
     case OPEN:
         $rowAttr['class'] = 'open';
@@ -52,6 +54,7 @@ $html = $this->Html->tableCells(array(
             'id' => $this->Tk->id('UserId', $record)
         ]) .
         $this->Form->control("$index.project_id", [
+            'value' => $record->project_id,
             'options' => $projects,
             'label' => FALSE,
             'div' => FALSE,
@@ -76,14 +79,16 @@ $html = $this->Html->tableCells(array(
 
         $duration,
 
-        $this->Form->control("$index.activity", array(
+        $this->Form->control("$index.activity", [
+            'value' => $record->activity,
+            'type' => 'textarea',
             'label' => FALSE,
             'div' => FALSE,
             'bind' => 'change.saveField',
             'fieldName' => 'activity',
             'index' => $recordId,
             'id' => $this->Tk->id('Activity', $record)
-        )),
+        ]),
 
         $this->Tk->timeFormActionButtons($recordId, $record->status))
 

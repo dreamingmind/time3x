@@ -8,7 +8,7 @@ if (!empty($result)) {
         echo $this->element('track_row', array(
             'projects' => $projects,
             'record' => $record,
-            'tasks' => $taskGroups[$record->project_id] ?? [],
+            'taskGroup' => $taskGroups,
             'index' => $index
         ));
     }

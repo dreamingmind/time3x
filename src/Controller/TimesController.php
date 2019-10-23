@@ -178,7 +178,7 @@ class TimesController extends AppController
         $this->set('index', $result['Time']['id']);
         $this->setUiSelects('jobs');
 
-        $this->render('/Elements/track_row');
+        $this->render('/Element/track_row');
     }
 
     /**
@@ -187,9 +187,10 @@ class TimesController extends AppController
      */
     public function deleteRow($id) {
         $this->layout = 'ajax';
-        $result = $this->Times->delete($id);
-        $this->set('result', array('result' => $result));
-        $this->render('/Elements/json_return');
+        $entity = $this->Times->get($id);
+        $result = $this->Times->delete($entity);
+        $this->set('result', ['result' => $result]);
+        $this->render('/Element/json_return');
     }
 
     /**
@@ -219,15 +220,6 @@ class TimesController extends AppController
         $this->render('/Element/track_row');
     }
 
-    public function psuedoFunction()
-    {
-        $foundSet = $this->readCacheOrDoQuery($IDs);
-        $this->sort($foundSet);
-        foreach ($foundSet as $entity) {
-            $this->render($entity->transformedData());
-        }
-    }
-
     /**
      * @todo update
      *
@@ -253,11 +245,10 @@ class TimesController extends AppController
      *
      */
     private function saveStandard() {
-        $this->request->data = array(
-            'Time' => array(
-                'id' => $this->request->data['id'],
-                $this->request->data['fieldName'] => $this->request->data['value']
-            ));
+        $this->request->data = [
+            'id' => $this->request->data['id'],
+            $this->request->data['fieldName'] => $this->request->data['value']
+        ];
     }
 
     /**
