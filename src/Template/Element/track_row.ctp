@@ -78,7 +78,7 @@ $html = $this->Html->tableCells(array(
                 'id' => $this->Tk->id('TaskId', $record)
             ]),
 
-        $record->time_in->i18nFormat('MM/dd HH:mm pp'), // outputs '2014-04-20 22:10', '%m.%d - %I:%M %p'), //09.30 9:14
+        $record->time_in->i18nFormat('MM/dd HH:mm', 'America/Los_Angeles'), // outputs '2014-04-20 22:10', '%m.%d - %I:%M %p'), //09.30 9:14
 
         $duration,
 
