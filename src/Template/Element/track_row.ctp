@@ -42,14 +42,17 @@ switch ($record->status) {
 $html = $this->Html->tableCells(array(
     array(
         $this->Form->control("$index.id", [
+            'value' => $record->id,
             'type' => 'hidden',
             'id' => $this->Tk->id('Id', $record)
         ]) .
         $this->Form->control("$index.time_out", [
+            'value' => $record->time_out,
             'type' => 'hidden',
             'id' => $this->Tk->id('TimeOut', $record)
         ]) .
         $this->Form->control("$index.user_id", [
+            'value' => $record->user_id,
             'type' => 'hidden',
             'id' => $this->Tk->id('UserId', $record)
         ]) .

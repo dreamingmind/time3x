@@ -3,7 +3,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/* 
+/*
     Created on : Jul 28, 2014, 10:38:05 PM
     Author     : jasont
 */
@@ -20,6 +20,11 @@ table.striped tr.open.alt {
 }
 table.striped tr.open {
     background-color: rgb(184,243,199);
+}
+
+table.striped tr.ajax {
+    background-color: rgb(173,0,0);
+    /*background-color: rgb(209, 151, 50);*/
 }
 
 table.striped tr.paused.alt {

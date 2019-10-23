@@ -32,15 +32,16 @@ function AdjustSelect(e) {
 
 function timeChange(e, action) {
     var id = $(e.currentTarget).attr('index');
+    $('#row_' + id).removeClass('alt open paused closed').addClass('ajax');
     $.ajax({
         type: "GET",
         url: OSTime.webroot + OSTime.controller + action + "/" + id,
-        dataType: "HTML",
+        dataType: "JSON",
         success: function (data) {
-            if (data.match(/<tr/) != null) {
-                replaceRow(data, id);
+            if (data.html.match(/<tr/) != null) {
+                replaceRow(data.html, id);
             } else {
-                $('#row_' + id).before('<tr><td colspan="5" class="flashmessage"' + data + '</td></tr>');
+                $('#row_' + id).before('<tr><td colspan="5" class="flashmessage"' + data.html + '</td></tr>');
             }
         },
         error: function () {
@@ -76,6 +77,7 @@ function timeDelete(e) {
         return;
     }
     var id = $('#' + $(this).attr('index') + 'TimeId').val();
+    $('#row_' + id).removeClass('alt open paused closed').addClass('ajax');
     $.ajax({
         type: "POST",
         url: OSTime.webroot + OSTime.controller + "deleteRow/" + id,
@@ -221,6 +223,7 @@ function saveField(e) {
     var fieldName = $(e.currentTarget).attr('fieldName');
     var value = $(e.currentTarget).val();
     var postData = {'id': id, 'fieldName': fieldName, 'value': value};
+    $('#row_' + id).removeClass('alt open paused closed').addClass('ajax');
     $.ajax({
         type: "POST",
         url: OSTime.webroot + OSTime.controller + "saveField",

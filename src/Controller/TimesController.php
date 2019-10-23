@@ -265,14 +265,24 @@ class TimesController extends AppController
      */
     public function timeStop($id, $state = CLOSED) {
         $this->layout = 'ajax';
-        $time = date('Y-m-d H:i:s');
-        if($this->Times->getRecordStatus($id) != PAUSED){
-            $this->request->data('Time.time_out', $time);
+
+        $time = $this->Times->get($id);
+        $patch = [];
+        if ($time->status != PAUSED) {
+            $patch['time_out'] = new FrozenTime(time());
         }
-        $this->request->data('Time.id', $id)
-            ->data('Time.status', $state);
-        $element = $this->saveTimeChange($id);
-        $this->render($element);
+        $patch['status'] = $state;
+        $time = $this->Times->patchEntity($time, $patch);
+
+        $result = $this->Times->save($time);
+        $timeEntity = $this->Times->get($id);
+
+        $this->set('userId', $timeEntity->user_id);
+        $this->set('index', 0);
+        $this->set('record', $timeEntity);
+        $this->setUiSelects('jobs');
+
+        $this->render('/Element/track_row');
     }
 
     /**
@@ -293,13 +303,29 @@ class TimesController extends AppController
      */
     public function timeRestart($id) {
         $this->layout = 'ajax';
-        $duration = $this->Times->field('duration', array('Time.id' => $id));
-        $this->request->data('id', $id)
-            ->data('value', $duration);
-        $this->saveDuration();
-        $this->request->data('Time.status', OPEN);
-        $element = $this->saveTimeChange($id);
-        $this->render($element);
+        $time = $this->Times->get($id);
+        if ($time->status != OPEN) {
+            $endTime = new FrozenTime(time());
+            $startTime = new FrozenTime(time() - $time->duration());
+            $data = [
+                'id' => $id,
+                'status' => OPEN,
+                'time_in' => $startTime,
+                'time_out' => $endTime
+            ];
+            $time = new Time($data);
+
+            $result = $this->Times->save($time);
+        }
+
+        $timeEntity = $this->Times->get($id);
+
+        $this->set('userId', $timeEntity->user_id);
+        $this->set('index', 0);
+        $this->set('record', $timeEntity);
+        $this->setUiSelects('jobs');
+
+        $this->render('/Element/track_row');
     }
 
     /**
