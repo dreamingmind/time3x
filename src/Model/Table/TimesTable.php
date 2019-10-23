@@ -112,7 +112,7 @@ class TimesTable extends Table
 
         if ($user_id) {
             $query = $query->where([
-                'user_id' => $user->id
+                'user_id' => $user_id
                 ]);
         }
         return $query->where([

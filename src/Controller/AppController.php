@@ -63,7 +63,10 @@ class AppController extends Controller
         ]);
         $this->loadComponent('Flash');
         $this->Session = $this->request->getSession();
-        $this->readUser();
+//        $this->Session->delete('User');
+        if (is_null($this->readUserId()) && $this->request->getParam('action') != 'who') {
+            $this->redirect('/users/who');
+        }
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
@@ -71,9 +74,9 @@ class AppController extends Controller
         //$this->loadComponent('Security');
     }
 
-    protected function readUser()
+    protected function readUserId()
     {
-        $this->userId = $this->Session->read('User.id');
+        return $this->Session->read('User.id');
     }
 
     protected function writeUser($id)

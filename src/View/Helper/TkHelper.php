@@ -165,7 +165,7 @@ class TkHelper extends Helper {
 		$out = '';
 
 		$index = 1;
-		foreach ($items as $key => $item) {
+		foreach ($items ?? [] as $key => $item) {
 			if (is_array($item)) {
 				$item = $key . $this->nestedList($item, $options, $itemOptions, $tag);
 			}

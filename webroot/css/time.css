@@ -7,6 +7,16 @@ and open the template in the editor.
     Created on : Jul 28, 2014, 10:38:05 PM
     Author     : jasont
 */
+div#container {
+    margin: 2rem;
+}
+div#footer {
+    margin: 0 2re 2rem;
+}
+
+#scale_textarea_ui {
+    margin-bottom: .5rem;
+}
 table.striped tbody th{
 	text-align: left;
 }

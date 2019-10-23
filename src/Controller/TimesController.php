@@ -125,7 +125,7 @@ class TimesController extends AppController
     public function track($days = 1) {
         $result = $this->Times->find(
             'OpenRecords',
-            ['user_id' => $this->userId, 'days' => $days])
+            ['user_id' => $this->readUserId(), 'days' => $days])
             ->select(['id', 'time_in', 'time_out', 'activity', 'project_id', 'task_id', 'status', ]);
         $summarizer = new Summaries();
 //        debug($summarizer->summarizeProjects($result));

@@ -111,6 +111,19 @@ class UsersController extends AppController
 
     public function who()
     {
-        debug('select a user');die;
+        $users = $this->Users->find('list')->toArray();
+        if (!stristr($this->referer(), 'users/who')) {
+            $this->Session->write('User.destination', $this->referer());
+        }
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $this->writeUser($this->request->getData('user'));
+            $this->Flash->error(__('The user is now ' . $users[$this->request->getData('user')]));
+            $destination = $this->Session->read('User.destination');
+            $this->Session->delete('User.destination');
+            $this->redirect($destination);
+        }
+
+        $this->set(compact('users'));
     }
 }
