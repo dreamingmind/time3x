@@ -5,12 +5,13 @@ echo $this->Html->tag('Table', NULL, array('class' => 'striped tight sortable'))
 echo $this->Html->tableHeaders(array('Project', 'Task', 'Time In', 'Duration', 'Activity', 'Tools'), array('class' => 'thead'));
 if (!empty($result)) {
     foreach ($result as $index => $record) {
-        echo $this->element('track_row', array(
+        echo $this->element('track_row', [
             'projects' => $projects,
             'record' => $record,
             'taskGroup' => $taskGroups,
-            'index' => $index
-        ));
+            'index' => $index,
+            'users' => $users
+        ]);
     }
 }
 echo '</table>';

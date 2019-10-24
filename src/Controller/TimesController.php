@@ -120,18 +120,18 @@ class TimesController extends AppController
 
     /**
      * Main ui
-     * @todo update
      */
     public function track($days = 1) {
         $user = $this->guaranteedUser();
+        $users = $this->Times->Users->find('list')->toArray();
 
         $result = $this->Times->find('OpenRecords',
             ['user_id' => $user['id'], 'days' => $days])
-            ->select(['id', 'user_id', 'time_in', 'time_out', 'activity', 'project_id', 'task_id', 'status', ]);
+            ->select(['id', 'user_id', 'time_in', 'time_out', 'activity', 'project_id', 'task_id', 'status']);
         $summarizer = new Summaries();
         $report = $summarizer->summarizeUsers($result);
 
-        $this->set(compact('result', 'report'));
+        $this->set(compact('result', 'report', 'users'));
         $this->setUiSelects('jobs');
     }
 
