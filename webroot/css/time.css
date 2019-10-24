@@ -7,6 +7,16 @@ and open the template in the editor.
     Created on : Jul 28, 2014, 10:38:05 PM
     Author     : jasont
 */
+div.message {
+    background-color: rgba(178, 239, 176, 0.99);
+    padding: .5rem;
+    margin-bottom: .5rem;
+}
+form#reveal {
+    display: inline-block;
+    margin-left: 1rem;
+}
+
 div#container {
     margin: 2rem;
 }

@@ -122,11 +122,16 @@ class TimesController extends AppController
      * Main ui
      */
     public function track($days = 1) {
-        $user = $this->guaranteedUser();
-        $users = $this->Times->Users->find('list')->toArray();
 
-        $result = $this->Times->find('OpenRecords',
-            ['user_id' => $user['id'], 'days' => $days])
+        $user = $this->guaranteedUser();
+        $all = $this->request->getData('all') ?? FALSE;
+        $users = $this->Times->Users->find('list')->toArray();
+        $conditions = ['days' => $days];
+        if (!$all) {
+            $conditions['user_id'] = $user['id'];
+        }
+
+        $result = $this->Times->find('OpenRecords', $conditions)
             ->select(['id', 'user_id', 'time_in', 'time_out', 'activity', 'project_id', 'task_id', 'status']);
         $summarizer = new Summaries();
         $report = $summarizer->summarizeUsers($result);
@@ -162,7 +167,7 @@ class TimesController extends AppController
     public function newTimeRow() {
         $this->layout = 'ajax';
         $time = new Time([
-            'user_id' => $this->readUserId(),
+            'user_id' => $this->userSession()['id'],
             'time_in' => new FrozenTime(time()),
             'time_out' => new FrozenTime(time()),
             'status' => OPEN
@@ -223,7 +228,7 @@ class TimesController extends AppController
     public function saveField() {
         $result = array();
         $this->layout = 'ajax';
-        $this->Times->id = $this->request->data['id'];
+        $this->Times->id = $this->request->getData('id');
         if($this->request->getData('fieldName') == 'duration'){
             $this->saveDuration();
         } elseif ($this->request->getData('fieldname') == 'project_id') {
@@ -248,7 +253,7 @@ class TimesController extends AppController
      *
      */
     private function saveDuration() {
-        $time = explode(':', $this->request->data['value']);
+        $time = explode(':', $this->request->getData('value'));
         if (count($time) == 1) {
             $durSeconds = ($time[0] * MINUTE);
         }  else {

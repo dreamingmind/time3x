@@ -24,5 +24,11 @@ echo $this->Form->button(
         ['class' => 'icon-plus-sign'])
     . ' New', ['class' => 'orange', 'bind' => 'click.newTimeRow']
 );
+
+echo $this->Form->create(null, ['id' => 'reveal']);
+echo $this->Form->control('all', ['type' => 'hidden', 'value' => true]);
+echo $this->Form->button('Show All Users', ['class' => 'blue']);
+echo $this->Form->end();
+
 echo '<p> </p>';
 debug($report);
