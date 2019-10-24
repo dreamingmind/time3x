@@ -18,6 +18,7 @@ use Cake\Controller\Component\FlashComponent;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Http\Session;
+use Cake\ORM\TableRegistry;
 
 /**
  * Application Controller
@@ -41,9 +42,13 @@ class AppController extends Controller
     protected $Session;
 
     /**
-     * @var string
+     * The User data from the session
+     *
+     * keys: entity, id, name, username
+     *
+     * @var null|array
      */
-    protected $userId;
+    protected $_userSession;
 
     /**
      * Initialization hook method.
@@ -52,6 +57,7 @@ class AppController extends Controller
      *
      * e.g. `$this->loadComponent('Security');`
      *
+     * @throws \Exception
      * @return void
      */
     public function initialize()
@@ -64,9 +70,8 @@ class AppController extends Controller
         $this->loadComponent('Flash');
         $this->Session = $this->request->getSession();
 //        $this->Session->delete('User');
-        if (is_null($this->readUserId()) && $this->request->getParam('action') != 'who') {
-            $this->redirect('/users/who');
-        }
+        $this->readUser();
+
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
@@ -74,14 +79,26 @@ class AppController extends Controller
         //$this->loadComponent('Security');
     }
 
-    protected function readUserId()
+
+    public function userSession()
     {
-        return $this->Session->read('User.id');
+        return $this->_userSession;
     }
 
-    protected function writeUser($id)
+    protected function readUser() {
+        $UserSessionData = $this->Session->read('User');
+        if (!is_null($UserSessionData)) {
+            $UserSessionData['entity'] = unserialize($UserSessionData['entity']);
+        }
+        $this->_userSession = $UserSessionData;
+    }
+
+    protected function writeUser($entity)
     {
-        $this->Session->write('User.id', $id);
+        $this->Session->write('User.entity', serialize($entity));
+        $this->Session->write('User.id', $entity->id);
+        $this->Session->write('User.name', $entity->name);
+        $this->Session->write('User.username', $entity->username);
     }
 
 }

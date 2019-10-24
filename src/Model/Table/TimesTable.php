@@ -107,6 +107,7 @@ class TimesTable extends Table
 
     public function findOpenRecords(Query $query, $options)
     {
+        debug($options);
         $days = $options['days'] ?? 1;
         $user_id = $options['user_id'] ?? FALSE;
 

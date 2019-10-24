@@ -123,16 +123,36 @@ class TimesController extends AppController
      * @todo update
      */
     public function track($days = 1) {
-        $result = $this->Times->find(
-            'OpenRecords',
-            ['user_id' => $this->readUserId(), 'days' => $days])
+        $user = $this->guaranteedUser();
+
+        $result = $this->Times->find('OpenRecords',
+            ['user_id' => $user['id'], 'days' => $days])
             ->select(['id', 'user_id', 'time_in', 'time_out', 'activity', 'project_id', 'task_id', 'status', ]);
         $summarizer = new Summaries();
-//        debug($summarizer->summarizeProjects($result));
         $report = $summarizer->summarizeUsers($result);
 
         $this->set(compact('result', 'report'));
         $this->setUiSelects('jobs');
+    }
+
+    /**
+     * Check the session for the tracking user's identity
+     *
+     * keys: entity, id, name, username
+     *
+     * @return array|null
+     */
+    protected function guaranteedUser()
+    {
+        $user = $this->userSession();
+
+        if (is_null($user['id'])) {
+            $this->Flash->set('You are anonomous. Identify yourself before tracking time.');
+            $this->redirect('/users/who');
+        }
+
+        $this->Flash->set("You are keeping time for {$user['name']} ({$user['username']})");
+        return $user;
     }
 
     /**

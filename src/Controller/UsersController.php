@@ -52,6 +52,7 @@ class UsersController extends AppController
     {
         $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
+
             $user = $this->Users->patchEntity($user, $this->request->getData());
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
@@ -112,16 +113,17 @@ class UsersController extends AppController
     public function who()
     {
         $users = $this->Users->find('list')->toArray();
-        if (!stristr($this->referer(), 'users/who')) {
-            $this->Session->write('User.destination', $this->referer());
-        }
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $this->writeUser($this->request->getData('user'));
-            $this->Flash->error(__('The user is now ' . $users[$this->request->getData('user')]));
-            $destination = $this->Session->read('User.destination');
-            $this->Session->delete('User.destination');
-            $this->redirect($destination);
+            $userId = $this->request->getData('user');
+        }
+
+        if (isset($userId) && array_key_exists($userId, $users)) {
+            $user = $this->Users->get($userId);
+            $this->writeUser($user);
+            $this->redirect('/times/track');
+        } else {
+            $this->Flash->set('Invalid User provided');
         }
 
         $this->set(compact('users'));
