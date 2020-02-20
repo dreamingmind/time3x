@@ -68,7 +68,7 @@ class AppController extends Controller
             'enableBeforeRedirect' => false,
         ]);
         $this->loadComponent('Flash');
-        $this->Session = $this->request->getSession();
+        $this->Session = $this->request->getSession(['timeout' => 30 * DAY]);
 //        $this->Session->delete('User');
         $this->readUser();
 
