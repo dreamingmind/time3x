@@ -45,6 +45,7 @@ function timeChange(e, action) {
             }
         },
         error: function () {
+            handleError(data);
             alert('Error adding the time row.')
         }
     });
@@ -90,6 +91,7 @@ function timeDelete(e) {
             }
         },
         error: function () {
+            handleError(data);
             alert('Error deleting the time row.')
         }
     });
@@ -115,6 +117,7 @@ function timeInfo(e) {
             $('div.times.form').draggable();
         },
         error: function (data) {
+            handleError(data);
             alert('There was an error on the server. Please try again');
         }
     })
@@ -143,6 +146,7 @@ function saveTimeEdit(e) {
             }
         },
         error: function (data) {
+            handleError(data);
             alert('failure');
         }
     })
@@ -185,11 +189,20 @@ function newTimeRow(e) {
             bindHandlers('table.sortable tr.last');
             initToggles();
         },
-        error: function () {
+        error: function (data) {
+            handleError(data);
             alert('Error adding the time row.')
         }
     });
+}
 
+function handleError(data) {
+    if (data.responseText.search('cake-error')) {
+        $('#content').prepend(data.responseText);
+        document.location = 'http://localhost/time3x/users/who';
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -239,6 +252,7 @@ function saveField(e) {
             initToggles();
         },
         error: function () {
+            handleError(data);
             alert('Error adding the time row.')
         }
     });
@@ -327,6 +341,7 @@ function hideDurationInput(e) {
             initToggles();
         },
         error: function () {
+            handleError(data);
             alert('Error adding the time row.')
         }
     });

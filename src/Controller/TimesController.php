@@ -124,6 +124,11 @@ class TimesController extends AppController
     public function track($days = 1) {
 
         $user = $this->guaranteedUser();
+
+        if ($user == false) {
+            return $this->redirect('/users/who');
+        }
+
         $all = $this->request->getData('all') ?? FALSE;
         $users = $this->Times->Users->find('list')->toArray();
         $conditions = ['days' => $days];
@@ -151,9 +156,9 @@ class TimesController extends AppController
     {
         $user = $this->userSession();
 
-        if (is_null($user['id'])) {
+        if ($user == ['entity' => false]) {
             $this->Flash->set('You are anonomous. Identify yourself before tracking time.');
-            $this->redirect('/users/who');
+            return false;
         }
 
         $this->Flash->set("You are keeping time for {$user['name']} ({$user['username']})");

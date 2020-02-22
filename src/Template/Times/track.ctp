@@ -1,4 +1,10 @@
 <?php
+/* @var \Cake\View\View $this */
+/* @var array $projects */
+/* @var array $taskGroups */
+/* @var array $users */
+/* @var array $report */
+
 echo "\n" . $this->element('scale_textarea_ui');
 echo $this->Form->create($result, ['id' => 'TimeTrackForm']);
 echo $this->Html->tag('Table', NULL, array('class' => 'striped tight sortable'));

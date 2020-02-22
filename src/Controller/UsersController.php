@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Cache\Cache;
 
 /**
  * Users Controller
@@ -120,7 +121,8 @@ class UsersController extends AppController
 
         if (isset($userId) && array_key_exists($userId, $users)) {
             $user = $this->Users->get($userId);
-            $this->writeUser($user);
+            Cache::write('user', $user, 'user');
+//            $this->writeUser($user);
             $this->redirect('/times/track');
         } else {
             $this->Flash->set('Invalid User provided');

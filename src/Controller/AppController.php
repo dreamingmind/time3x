@@ -14,6 +14,7 @@
  */
 namespace App\Controller;
 
+use Cake\Cache\Cache;
 use Cake\Controller\Component\FlashComponent;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
@@ -68,7 +69,7 @@ class AppController extends Controller
             'enableBeforeRedirect' => false,
         ]);
         $this->loadComponent('Flash');
-        $this->Session = $this->request->getSession(['timeout' => 30 * DAY]);
+        $this->Session = $this->request->getSession(/*['timeout' => 30 * DAY]*/);
 //        $this->Session->delete('User');
         $this->readUser();
 
@@ -86,7 +87,8 @@ class AppController extends Controller
     }
 
     protected function readUser() {
-        $UserSessionData = $this->Session->read('User');
+//        $UserSessionData = $this->Session->read('User');
+        $UserSessionData = Cache::read('user', 'user');
         if (!is_null($UserSessionData)) {
             $UserSessionData['entity'] = unserialize($UserSessionData['entity']);
         }
