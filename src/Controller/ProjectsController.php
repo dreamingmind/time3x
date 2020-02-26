@@ -17,12 +17,19 @@ class ProjectsController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
-    public function index()
+    public function index($state = null)
     {
         $this->paginate = [
             'contain' => ['Clients']
         ];
-        $projects = $this->paginate($this->Projects);
+        if (is_null($state)) {
+            $projects = $this->paginate($this->Projects);
+        } else {
+            $q = $this->Projects
+                ->find('all')
+                ->where(['state' => $state]);
+            $projects = $this->paginate($q);
+        }
 
         $this->set(compact('projects'));
     }
@@ -52,7 +59,18 @@ class ProjectsController extends AppController
     {
         $project = $this->Projects->newEntity();
         if ($this->request->is('post')) {
-            $project = $this->Projects->patchEntity($project, $this->request->getData());
+            $post = $this->request->getData();
+            if (!empty($post['tasks'])) {
+//                $taskList = explode(PHP_EOL, $post['tasks']);
+                $starterSet = collection(explode(PHP_EOL, $post['tasks']));
+                $tasks = $starterSet->map(function($value) {
+                    list($name, $note) = explode('::', $value);
+                    return ['name' => $name, 'note' => trim($note), 'state' => 'active'];
+                })
+                ->toArray();
+                $post['tasks'] = $tasks;
+            }
+            $project = $this->Projects->patchEntity($project, $post);
             if ($this->Projects->save($project)) {
                 $this->Flash->success(__('The project has been saved.'));
 
@@ -60,8 +78,18 @@ class ProjectsController extends AppController
             }
             $this->Flash->error(__('The project could not be saved. Please, try again.'));
         }
+        $tasks = [
+            'Upgrade::Fix deprecations and language changes',
+            'Migrations::db creation/modification',
+            'Project Management::Repo management, Project Cards, Issue review, etc',
+            'Planning/Analysis::UMLs and planning work',
+            'Dev::write code',
+            'Test::Write and run tests',
+            'Study/R&D::learn new stuff',
+            'Documentation::Document the code and system'
+        ];
         $clients = $this->Projects->Clients->find('list', ['limit' => 200]);
-        $this->set(compact('project', 'clients'));
+        $this->set(compact('project', 'clients', 'tasks'));
     }
 
     /**

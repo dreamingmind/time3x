@@ -25,6 +25,10 @@
             echo $this->Form->control('name');
             echo $this->Form->control('note');
             echo $this->Form->control('state');
+            echo $this->Html->para(null, 'Make your new topics in the form "name::description[return]');
+            echo $this->Form->control('tasks', [
+                'type' => 'textarea', 'value' => implode(PHP_EOL, $tasks)
+            ]);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

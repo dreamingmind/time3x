@@ -18,6 +18,13 @@
 </nav>
 <div class="projects index large-9 medium-8 columns content">
     <h3><?= __('Projects') ?></h3>
+    <?php
+    echo '<p>Filter by: <strong>';
+    echo $this->Html->link('[Active]', ['action' => 'index', 'active']);
+    echo $this->Html->link('[Inactive]', ['action' => 'index', 'inactive']);
+    echo $this->Html->link('[Maintenance]', ['action' => 'index', 'maintenance']);
+    echo '</strong></p>';
+    ?>
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
