@@ -248,7 +248,7 @@ function saveField(e) {
             OSTime.taskGroups = data.taskGroups;
             updateTableClassing();
             updateTableSortability();
-            bindHandlers('table.sortable tr.last');
+            bindHandlers('tr#row_' + data.id);
             initToggles();
         },
         error: function () {
