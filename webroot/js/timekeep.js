@@ -176,11 +176,13 @@ function setDefaultProject() {
  */
 function newTimeRow(e) {
     e.preventDefault();
+    $('#TimeTrackForm tbody').append('<tr id="tmp_row"><td colspan="7">&nbsp;</td></tr>');
     $.ajax({
         type: "POST",
         url: OSTime.webroot + OSTime.controller + "newTimeRow",
         dataType: "JSON",
         success: function (data) {
+            $('#tmp_row').remove();
             $('#TimeTrackForm tbody').append(data.html);
             OSTime.projects = data.projects;
             OSTime.taskGroups = data.taskGroups;
@@ -191,6 +193,7 @@ function newTimeRow(e) {
         },
         error: function (data) {
             handleError(data);
+            $('#tmp_row').remove();
             alert('Error adding the time row.')
         }
     });
