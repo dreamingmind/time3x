@@ -332,11 +332,13 @@ function hideDurationInput(e) {
 
 	function timeDuplicate(e) {
     e.preventDefault();
-    $.ajax({
+        $('#TimeTrackForm tbody').append('<tr id="tmp_row"><td colspan="7">&nbsp;</td></tr>');
+        $.ajax({
         type: "GET",
         url: OSTime.webroot + OSTime.controller + "duplicateTimeRow/" + $(e.currentTarget).attr('index'),
         dataType: "JSON",
         success: function (data) {
+            $('#tmp_row').remove();
             $('#TimeTrackForm tbody').append(data.html);
             updateTableClassing();
             updateTableSortability();
@@ -345,6 +347,7 @@ function hideDurationInput(e) {
         },
         error: function () {
             handleError(data);
+            $('#tmp_row').remove();
             alert('Error adding the time row.')
         }
     });
