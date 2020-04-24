@@ -84,6 +84,7 @@ class ProjectsController extends AppController
             'Project Management::Repo management, Project Cards, Issue review, etc',
             'Planning/Analysis::UMLs and planning work',
             'Dev::write code',
+            'UI/UX::Interface work',
             'Test::Write and run tests',
             'Study/R&D::learn new stuff',
             'Documentation::Document the code and system'
